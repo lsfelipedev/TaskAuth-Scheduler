@@ -31,10 +31,10 @@ public class Notification {
     @ManyToOne(fetch = FetchType.EAGER)
     private User userDestination;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Channel channel;
 
     public Notification(LocalDateTime date, String message, User userSender, User userDestination, Status status, Channel channel) {
@@ -51,8 +51,8 @@ public class Notification {
         this.message = requestNotification.message();
         this.userSender = userSender;
         this.userDestination = userDestination;
-        this.status = requestNotification.status().toStatus();
-        this.channel = requestNotification.channel().toChannel();
+        this.status = requestNotification.status();
+        this.channel = requestNotification.channel();
     }
 }
 

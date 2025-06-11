@@ -50,7 +50,7 @@ public class NotificationService {
                 userLocalDestination);
 
         if(notificationToSave.getDate().isBefore(LocalDateTime.now()))
-            notificationToSave.setStatus(Status.StatusLoad.SUCCESS.toStatus());
+            notificationToSave.setStatus(Status.SUCCESS);
 
         notificationRepository.save(notificationToSave);
     }
@@ -88,11 +88,11 @@ public class NotificationService {
     @Transactional
     public void checkAndSend(LocalDateTime dateTime) {
         var notifications = notificationRepository.findByStatusIn(
-                List.of(Status.StatusLoad.PENDING.toStatus(), Status.StatusLoad.ERROR.toStatus()));
+                List.of(Status.PENDING, Status.ERROR));
 
         List<Notification> notificationsToUpdate = notifications.stream()
                 .filter(notification -> !notification.getDate().isAfter(dateTime))
-                .peek(notification -> notification.setStatus(Status.StatusLoad.SUCCESS.toStatus()))
+                .peek(notification -> notification.setStatus(Status.SUCCESS))
                 .collect(Collectors.toList());
 
         if (!notificationsToUpdate.isEmpty())

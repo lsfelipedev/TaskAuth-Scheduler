@@ -9,6 +9,6 @@ public record RequestNotification(LocalDateTime dateTime,
                                   String message,
                                   String loginSender,
                                   String loginDestination,
-                                  Status.StatusLoad status,
-                                  Channel.ChannelLoad channel) {
+                                  Status status,
+                                  Channel channel) {
 }
