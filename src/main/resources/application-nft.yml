@@ -5,7 +5,7 @@ spring:
     password: ${PGPASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     driver:
       class:
@@ -14,7 +14,7 @@ spring:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:my-secret-key}
+      secret: "mySecretKey"
 
 logging:
   level:

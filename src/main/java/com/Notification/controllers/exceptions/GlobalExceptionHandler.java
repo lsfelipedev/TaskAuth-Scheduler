@@ -24,12 +24,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity usernameInvalidException(UsernameNotFoundException message){
-        return new ResponseEntity(message.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(message.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity passwordInvalidException(BadCredentialsException message){
-        return new ResponseEntity(message.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(message.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity dateTimeException(){
         String message = "fill all fields correctly.";
-        return new ResponseEntity(message, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Throwable.class)

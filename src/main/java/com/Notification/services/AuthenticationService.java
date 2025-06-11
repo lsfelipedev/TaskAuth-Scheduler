@@ -49,11 +49,10 @@ public class AuthenticationService implements UserDetailsService {
         }
     }
 
-    public User registerUser(RegisterDTO data)
-    {
+    public User registerUser(RegisterDTO data) {
         loginPasswordException(data);
         String passwordBcrypt = new BCryptPasswordEncoder().encode(data.password());
-        User userRegister = new User(data.login(), passwordBcrypt, data.role());
+        User userRegister = new User(data.login(), passwordBcrypt, data.email(), data.role());
         return this.repository.save(userRegister);
     }
 
