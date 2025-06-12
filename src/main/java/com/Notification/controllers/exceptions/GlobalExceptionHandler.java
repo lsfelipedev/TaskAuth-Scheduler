@@ -7,15 +7,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler{
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
+
+        Map<String, String> validationErrors = new HashMap<>();
+
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationErrors.values());
+    }
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity userNullException(NullPointerException nullPointerException){
@@ -43,10 +60,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity unexpectedException(Throwable throwable) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity unexpectedException(Exception exception) {
         String message = "something unexpected happened, see the logs";
-        logger.error(message, throwable);
+        logger.error(message, exception);
         return new ResponseEntity(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

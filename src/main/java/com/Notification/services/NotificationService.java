@@ -8,12 +8,10 @@ import com.Notification.dtos.notification.NotificationUserResponse;
 import com.Notification.dtos.notification.RequestNotification;
 import com.Notification.repositories.NotificationRepository;
 import com.Notification.repositories.UserRepository;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -35,8 +33,8 @@ public class NotificationService {
         User userLocalSender = userRepository.findByLogin(requestNotification.loginSender());
         User userLocalDestination = userRepository.findByLogin(requestNotification.loginDestination());
 
-        if (!notificationNullException(requestNotification))
-            throw new NullPointerException("All fields must be filled in.");
+//        if (!notificationNullException(requestNotification))
+//            throw new NullPointerException("All fields must be filled in.");
 
         if(userLocalSender.getLogin().isEmpty())
             throw new BadCredentialsException("Login Sender is invalid");
@@ -47,7 +45,8 @@ public class NotificationService {
         var notificationToSave = new Notification(
                 requestNotification,
                 userLocalSender,
-                userLocalDestination);
+                userLocalDestination,
+                Status.PENDING);
 
         if(notificationToSave.getDate().isBefore(LocalDateTime.now()))
             notificationToSave.setStatus(Status.SUCCESS);
@@ -87,8 +86,7 @@ public class NotificationService {
 
     @Transactional
     public void checkAndSend(LocalDateTime dateTime) {
-        var notifications = notificationRepository.findByStatusIn(
-                List.of(Status.PENDING, Status.ERROR));
+        var notifications = notificationRepository.findByStatus(Status.PENDING);
 
         List<Notification> notificationsToUpdate = notifications.stream()
                 .filter(notification -> !notification.getDate().isAfter(dateTime))
@@ -99,11 +97,11 @@ public class NotificationService {
             notificationRepository.saveAll(notificationsToUpdate);
     }
 
-    private boolean notificationNullException(RequestNotification request){
-
-        return request.dateTime() != null &&
-                !request.message().isEmpty() &&
-                !request.loginSender().isEmpty() &&
-                !request.loginDestination().isEmpty();
-    }
+//    private boolean notificationNullException(RequestNotification request){
+//
+//        return request.dateTime() != null &&
+//                !request.message().isEmpty() &&
+//                !request.loginSender().isEmpty() &&
+//                !request.loginDestination().isEmpty();
+//    }
 }

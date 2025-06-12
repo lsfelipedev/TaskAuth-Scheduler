@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByStatusIn(List<Status> statusList);
+    List<Notification> findByStatus(Status status);
 
 }

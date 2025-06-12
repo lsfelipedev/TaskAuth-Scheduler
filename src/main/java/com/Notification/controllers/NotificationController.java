@@ -4,10 +4,12 @@ import com.Notification.dtos.notification.RequestNotification;
 import com.Notification.services.NotificationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/notification")
+@Validated
 public class NotificationController {
 
     private final NotificationService notificationService;

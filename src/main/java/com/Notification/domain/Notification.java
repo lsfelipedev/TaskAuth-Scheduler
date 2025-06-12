@@ -46,12 +46,12 @@ public class Notification {
         this.channel = channel;
     }
 
-    public Notification(RequestNotification requestNotification, User userSender, User userDestination){
+    public Notification(RequestNotification requestNotification, User userSender, User userDestination, Status status){
         this.date = requestNotification.dateTime();
         this.message = requestNotification.message();
         this.userSender = userSender;
         this.userDestination = userDestination;
-        this.status = requestNotification.status();
+        this.status = status;
         this.channel = requestNotification.channel();
     }
 }

@@ -20,7 +20,6 @@ public class NotificationScheduler {
 
     @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.SECONDS)
     private void doCheckStatus(){
-
         var dateTime = LocalDateTime.now();
         logger.info("Running at {}", dateTime);
         notificationService.checkAndSend(dateTime);
