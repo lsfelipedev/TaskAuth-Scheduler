@@ -37,10 +37,10 @@ public class NotificationService {
         User userLocalDestination = userRepository.findByLogin(requestNotification.loginDestination());
 
 
-        if(userLocalSender.getLogin().isEmpty())
+        if(Objects.isNull(userLocalSender))
             throw new BadCredentialsException("Login Sender is invalid");
 
-        if(userLocalDestination.getLogin().isEmpty())
+        if(Objects.isNull(userLocalDestination))
             throw new BadCredentialsException("Login Destination is invalid");
 
         var notificationToSave = new Notification(

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
+public class Notification extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
