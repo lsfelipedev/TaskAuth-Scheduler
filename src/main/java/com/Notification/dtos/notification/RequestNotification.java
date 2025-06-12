@@ -22,6 +22,5 @@ public record RequestNotification(
         @NotEmpty(message = "loginDestination can not be a null or empty")
         String loginDestination,
 
-        @NotNull(message = "channel can not be a null or empty")
         Channel channel) {
 }

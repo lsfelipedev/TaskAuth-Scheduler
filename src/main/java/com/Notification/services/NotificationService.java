@@ -8,13 +8,16 @@ import com.Notification.dtos.notification.NotificationUserResponse;
 import com.Notification.dtos.notification.RequestNotification;
 import com.Notification.repositories.NotificationRepository;
 import com.Notification.repositories.UserRepository;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -33,8 +36,6 @@ public class NotificationService {
         User userLocalSender = userRepository.findByLogin(requestNotification.loginSender());
         User userLocalDestination = userRepository.findByLogin(requestNotification.loginDestination());
 
-//        if (!notificationNullException(requestNotification))
-//            throw new NullPointerException("All fields must be filled in.");
 
         if(userLocalSender.getLogin().isEmpty())
             throw new BadCredentialsException("Login Sender is invalid");
@@ -97,11 +98,4 @@ public class NotificationService {
             notificationRepository.saveAll(notificationsToUpdate);
     }
 
-//    private boolean notificationNullException(RequestNotification request){
-//
-//        return request.dateTime() != null &&
-//                !request.message().isEmpty() &&
-//                !request.loginSender().isEmpty() &&
-//                !request.loginDestination().isEmpty();
-//    }
 }
