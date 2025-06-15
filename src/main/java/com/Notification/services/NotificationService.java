@@ -8,13 +8,13 @@ import com.Notification.dtos.notification.NotificationUserResponse;
 import com.Notification.dtos.notification.RequestNotification;
 import com.Notification.repositories.NotificationRepository;
 import com.Notification.repositories.UserRepository;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -22,19 +22,17 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
+
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
-
-    public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
-        this.notificationRepository = notificationRepository;
-        this.userRepository = userRepository;
-    }
+    private final StreamBridge streamBridge;
 
     @Transactional
     public void registerNotification(RequestNotification requestNotification){
-        User userLocalSender = userRepository.findByLogin(requestNotification.loginSender());
-        User userLocalDestination = userRepository.findByLogin(requestNotification.loginDestination());
+        User userLocalSender = userRepository.findByLogin(requestNotification.userSender());
+        User userLocalDestination = userRepository.findByLogin(requestNotification.userDestination());
 
 
         if(Objects.isNull(userLocalSender))
@@ -53,6 +51,9 @@ public class NotificationService {
             notificationToSave.setStatus(Status.SUCCESS);
 
         notificationRepository.save(notificationToSave);
+
+        streamBridge.send("sendCommunication-out-0", requestNotification);
+
     }
 
     @Transactional
