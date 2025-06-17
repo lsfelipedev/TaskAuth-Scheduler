@@ -19,9 +19,6 @@ public record RequestNotification(
         @NotEmpty(message = "message can not be a null or empty")
         String message,
 
-        @NotEmpty(message = "userSender can not be a null or empty")
-        String userSender,
-
         @NotEmpty(message = "userDestination can not be a null or empty")
         String userDestination,
 

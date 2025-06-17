@@ -11,6 +11,8 @@ import com.Notification.repositories.NotificationRepository;
 import com.Notification.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +31,13 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final EmailProducer emailProducer;
 
+
     @Transactional
     public void registerNotification(RequestNotification requestNotification){
-        User userLocalSender = userRepository.findByLogin(requestNotification.userSender());
+
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User userLocalSender = userRepository.findByLogin(login);
         User userLocalDestination = userRepository.findByLogin(requestNotification.userDestination());
 
 
@@ -48,8 +54,6 @@ public class NotificationService {
                 Status.PENDING);
 
         notificationRepository.save(notificationToSave);
-
-        emailProducer.publishMessageEmail(notificationToSave);
     }
 
     @Transactional
@@ -91,8 +95,11 @@ public class NotificationService {
                 .peek(notification -> notification.setStatus(Status.SUCCESS))
                 .collect(Collectors.toList());
 
-        if (!notificationsToUpdate.isEmpty())
+        if (!notificationsToUpdate.isEmpty()){
             notificationRepository.saveAll(notificationsToUpdate);
-    }
 
+            notificationsToUpdate.forEach(emailProducer::publishMessageEmail);
+
+        }
+    }
 }
