@@ -6,10 +6,10 @@ import com.Notification.domain.User;
 import com.Notification.dtos.notification.NotificationResponse;
 import com.Notification.dtos.notification.NotificationUserResponse;
 import com.Notification.dtos.notification.RequestNotification;
+import com.Notification.producer.EmailProducer;
 import com.Notification.repositories.NotificationRepository;
 import com.Notification.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
-    private final StreamBridge streamBridge;
+    private final EmailProducer emailProducer;
 
     @Transactional
     public void registerNotification(RequestNotification requestNotification){
@@ -47,13 +47,9 @@ public class NotificationService {
                 userLocalDestination,
                 Status.PENDING);
 
-        if(notificationToSave.getDate().isBefore(LocalDateTime.now()))
-            notificationToSave.setStatus(Status.SUCCESS);
-
         notificationRepository.save(notificationToSave);
 
-        streamBridge.send("sendCommunication-out-0", requestNotification);
-
+        emailProducer.publishMessageEmail(notificationToSave);
     }
 
     @Transactional

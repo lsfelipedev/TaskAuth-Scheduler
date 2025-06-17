@@ -10,15 +10,15 @@ spring:
     driver:
       class:
         name: org.postgresql.Driver
-  cloud:
-    stream:
-      bindings:
-        sendCommunication-out-0:
-          destination: send-communication
-      kafka:
-        binder:
-          brokers:
-            - localhost:9092
+  rabbitmq:
+    queue:
+      email:
+        name: send-communication.email
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
 
 
 api:
