@@ -88,18 +88,17 @@ public class NotificationService {
 
     @Transactional
     public void checkAndSend(LocalDateTime dateTime) {
-        var notifications = notificationRepository.findByStatus(Status.PENDING);
 
-        List<Notification> notificationsToUpdate = notifications.stream()
-                .filter(notification -> !notification.getDate().isAfter(dateTime))
-                .peek(notification -> notification.setStatus(Status.SUCCESS))
-                .collect(Collectors.toList());
+        List<Notification> notificationList = notificationRepository.findByStatusAndDateBefore(Status.PENDING, LocalDateTime.now());
 
-        if (!notificationsToUpdate.isEmpty()){
+        if (!notificationList.isEmpty()) {
+
+            List<Notification> notificationsToUpdate = notificationList.stream()
+                    .peek(notification -> notification.setStatus(Status.SUCCESS))
+                    .collect(Collectors.toList());
+
             notificationRepository.saveAll(notificationsToUpdate);
-
             notificationsToUpdate.forEach(emailProducer::publishMessageEmail);
-
         }
     }
 }

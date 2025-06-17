@@ -9,7 +9,7 @@ public class EmailMapper {
         email.setUserId(dto.getUserId());
         email.setEmailFrom(dto.getEmailFrom());
         email.setEmailTo(dto.getEmailTo());
-        email.setText(dto.getEmailTo());
+        email.setText(dto.getMessage());
         return email;
     }
 }
