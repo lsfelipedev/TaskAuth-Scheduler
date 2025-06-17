@@ -1,0 +1,46 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name: email
+  datasource:
+    url: jdbc:postgresql://localhost:5432/email_service_db
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+  rabbitmq:
+    queue:
+      email:
+        name: send-communication.${spring.application.name}
+        dlq:
+          name: send-communication.${spring.application.name}.dlq
+    exchange:
+      dlx:
+        name: email.dlx
+    routing-key:
+      dlq: email.dlq
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
+    listener:
+      simple:
+        default-requeue-rejected: 'false'
+        retry:
+          enabled: 'true'
+          max-attempts: '3'
+          initial-interval: 5s
+          multiplier: '2'
+
