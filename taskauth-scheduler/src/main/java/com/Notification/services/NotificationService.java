@@ -87,8 +87,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public void checkAndSend(LocalDateTime dateTime) {
-
+    public void checkAndSend() {
         List<Notification> notificationList = notificationRepository.findByStatusAndDateBefore(Status.PENDING, LocalDateTime.now());
 
         if (!notificationList.isEmpty()) {

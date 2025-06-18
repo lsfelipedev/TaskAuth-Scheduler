@@ -25,11 +25,18 @@ spring:
         name: send-communication.${spring.application.name}
         dlq:
           name: send-communication.${spring.application.name}.dlq
+        sent:
+          name: communication-sent.${spring.application.name}
     exchange:
       dlx:
         name: email.dlx
+      main:
+        name: exchange.app.main
     routing-key:
-      dlq: email.dlq
+      email:
+        dlq: email.event.dlq
+        status: email.event.status
+        main: email.event.main
     host: localhost
     port: 5672
     username: guest

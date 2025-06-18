@@ -10,8 +10,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
+    @Value("${spring.rabbitmq.exchange.main.name}")
+    private String mainExchangeName;
+
     @Value("${spring.rabbitmq.queue.email.name}")
     private String mainQueueName;
+
+    @Value("${spring.rabbitmq.routing-key.email.main}")
+    private String mainRoutingKey;
+
+    @Value("${spring.rabbitmq.queue.email.sent.name}")
+    private String queueEmailSent;
+
+    @Value("${spring.rabbitmq.routing-key.email.status}")
+    private String statusRoutingKey;
 
     @Value("${spring.rabbitmq.queue.email.dlq.name}")
     private String dlqQueueName;
@@ -19,7 +31,7 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.exchange.dlx.name}")
     private String dlxExchangeName;
 
-    @Value("${spring.rabbitmq.routing-key.dlq}")
+    @Value("${spring.rabbitmq.routing-key.email.dlq}")
     private String dlqRoutingKey;
 
 
@@ -29,6 +41,16 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 
+
+    @Bean
+    public DirectExchange mainExchange(){
+        return new DirectExchange(mainExchangeName);
+    }
+
+    @Bean
+    public Queue queueEmailSent(){
+        return QueueBuilder.durable(queueEmailSent).build();
+    }
 
     @Bean
     public Queue mainQueue(){
@@ -55,5 +77,21 @@ public class RabbitMQConfig {
                 .bind(deadLetterQueue())
                 .to(deadLetterExchange())
                 .with(dlqRoutingKey);
+    }
+
+    @Bean
+    public Binding mainQueueBinding(){
+        return BindingBuilder
+                .bind(mainQueue())
+                .to(mainExchange())
+                .with(mainRoutingKey);
+    }
+
+    @Bean
+    public Binding statusQueueBinding(){
+        return BindingBuilder
+                .bind(queueEmailSent())
+                .to(mainExchange())
+                .with(statusRoutingKey);
     }
 }

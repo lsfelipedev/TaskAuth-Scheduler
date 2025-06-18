@@ -22,7 +22,7 @@ public class NotificationScheduler {
     private void doCheckStatus(){
         var dateTime = LocalDateTime.now();
         logger.info("Running at {}", dateTime);
-        notificationService.checkAndSend(dateTime);
+        notificationService.checkAndSend();
     }
 }
 
