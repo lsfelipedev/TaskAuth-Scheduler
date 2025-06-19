@@ -3,14 +3,12 @@ package com.ms.email_service.service;
 import com.ms.email_service.dto.NotificationMsgDto;
 import com.ms.email_service.mapper.EmailMapper;
 import com.ms.email_service.model.Email;
-import com.ms.email_service.model.EmailStatus;
 import com.ms.email_service.repository.EmailRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,7 +28,7 @@ public class EmailService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailFrom);
-            message.setTo(dto.getEmailTo());
+            message.setTo("dto.getEmailTo()");
             message.setSubject("Notification send by: " + dto.getEmailFrom());
             message.setText(dto.getMessage());
 
@@ -45,7 +43,6 @@ public class EmailService {
 
         email.setSubject("Notification Register");
         email.setDateSent(LocalDateTime.now());
-        email.setEmailStatus(EmailStatus.SENT);
 
         return emailRepository.save(email);
     }

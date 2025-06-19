@@ -11,8 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class NotificationMsgDto{
 
+    Long notificationId;
     String userId;
     String emailFrom;
     String emailTo;
     String message;
+    Boolean emailSent;
 }

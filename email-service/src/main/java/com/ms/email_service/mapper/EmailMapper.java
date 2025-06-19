@@ -6,6 +6,7 @@ import com.ms.email_service.model.Email;
 public class EmailMapper {
 
     public static Email mapToEmail(NotificationMsgDto dto, Email email){
+        email.setNotificationId(dto.getNotificationId());
         email.setUserId(dto.getUserId());
         email.setEmailFrom(dto.getEmailFrom());
         email.setEmailTo(dto.getEmailTo());

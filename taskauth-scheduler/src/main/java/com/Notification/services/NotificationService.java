@@ -3,6 +3,7 @@ package com.Notification.services;
 import com.Notification.domain.Notification;
 import com.Notification.domain.Status;
 import com.Notification.domain.User;
+import com.Notification.dtos.notification.NotificationMsgDto;
 import com.Notification.dtos.notification.NotificationResponse;
 import com.Notification.dtos.notification.NotificationUserResponse;
 import com.Notification.dtos.notification.RequestNotification;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -56,7 +58,6 @@ public class NotificationService {
         notificationRepository.save(notificationToSave);
     }
 
-    @Transactional
     public NotificationResponse findNotificationById(Long idNotification) {
         var localNotification = notificationRepository.findById(idNotification)
                 .orElseThrow(() -> new NoSuchElementException("There is no Notification with this ID."));
@@ -79,25 +80,35 @@ public class NotificationService {
                 localNotification.getChannel());
     }
 
-    @Transactional
     public void deleteNotificationById(Long idNotification) {
         var localNotification = notificationRepository.findById(idNotification)
                 .orElseThrow(() -> new NoSuchElementException("Delete Failed! There is no Notification with this ID."));
         notificationRepository.delete(localNotification);
     }
 
-    @Transactional
     public void checkAndSend() {
-        List<Notification> notificationList = notificationRepository.findByStatusAndDateBefore(Status.PENDING, LocalDateTime.now());
+        List<Notification> notificationList = notificationRepository
+                .findByStatusAndDateBefore(Status.PENDING, LocalDateTime.now());
 
         if (!notificationList.isEmpty()) {
 
             List<Notification> notificationsToUpdate = notificationList.stream()
-                    .peek(notification -> notification.setStatus(Status.SUCCESS))
-                    .collect(Collectors.toList());
+                    .peek(notification -> notification.setStatus(Status.PROCESS))
+                    .toList();
 
             notificationRepository.saveAll(notificationsToUpdate);
             notificationsToUpdate.forEach(emailProducer::publishMessageEmail);
         }
+    }
+
+    public void updateStatusNotification(NotificationMsgDto dto){
+
+        Notification notificationFound = notificationRepository
+                .findById(dto.getNotificationId()).get();
+
+        Status status = dto.getEmailSent() ? Status.SUCCESS : Status.FAILED;
+
+        notificationFound.setStatus(status);
+        notificationRepository.save(notificationFound);
     }
 }

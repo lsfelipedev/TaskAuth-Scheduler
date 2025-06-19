@@ -24,6 +24,8 @@ public class Email implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    private Long notificationId;
+
     private String userId;
 
     private String emailFrom;
@@ -35,8 +37,5 @@ public class Email implements Serializable {
     private String text;
 
     private LocalDateTime dateSent;
-
-    @Enumerated(EnumType.STRING)
-    private EmailStatus emailStatus;
 
 }

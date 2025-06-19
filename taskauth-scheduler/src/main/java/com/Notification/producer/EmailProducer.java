@@ -25,10 +25,12 @@ public class EmailProducer {
     public void publishMessageEmail(Notification notification) {
 
         NotificationMsgDto dto = new NotificationMsgDto(
+                notification.getId(),
                 notification.getUserSender().getId(),
                 notification.getUserSender().getEmail(),
                 notification.getUserDestination().getEmail(),
-                notification.getMessage());
+                notification.getMessage(),
+                false);
 
         log.info("Sending Communication request for the details {}", dto);
         rabbitTemplate.convertAndSend(queueName, dto);
