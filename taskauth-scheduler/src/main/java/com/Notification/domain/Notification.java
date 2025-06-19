@@ -23,7 +23,7 @@ public class Notification extends BaseEntity{
 
     private String message;
 
-    private LocalDateTime date;
+    private LocalDateTime sendAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User userSender;
@@ -37,8 +37,8 @@ public class Notification extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private Channel channel;
 
-    public Notification(LocalDateTime date, String message, User userSender, User userDestination, Status status, Channel channel) {
-        this.date = date;
+    public Notification(LocalDateTime sendAt, String message, User userSender, User userDestination, Status status, Channel channel) {
+        this.sendAt = sendAt;
         this.message = message;
         this.userSender = userSender;
         this.userDestination = userDestination;
@@ -47,7 +47,7 @@ public class Notification extends BaseEntity{
     }
 
     public Notification(RequestNotification requestNotification, User userSender, User userDestination, Status status){
-        this.date = requestNotification.dateTime();
+        this.sendAt = requestNotification.dateTime();
         this.message = requestNotification.message();
         this.userSender = userSender;
         this.userDestination = userDestination;

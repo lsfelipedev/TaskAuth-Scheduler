@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findByStatusAndDateBefore(Status status, LocalDateTime localDateTime);
+    List<Notification> findByStatusAndSendAtBefore(Status status, LocalDateTime localDateTime);
 
 }

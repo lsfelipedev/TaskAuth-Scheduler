@@ -12,7 +12,6 @@ import com.Notification.repositories.NotificationRepository;
 import com.Notification.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +20,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -73,7 +70,7 @@ public class NotificationService {
         return new NotificationResponse(
                 localNotification.getId(),
                 localNotification.getMessage(),
-                localNotification.getDate(),
+                localNotification.getSendAt(),
                 userSender,
                 userDestination,
                 localNotification.getStatus(),
@@ -88,7 +85,7 @@ public class NotificationService {
 
     public void checkAndSend() {
         List<Notification> notificationList = notificationRepository
-                .findByStatusAndDateBefore(Status.PENDING, LocalDateTime.now());
+                .findByStatusAndSendAtBefore(Status.PENDING, LocalDateTime.now());
 
         if (!notificationList.isEmpty()) {
 

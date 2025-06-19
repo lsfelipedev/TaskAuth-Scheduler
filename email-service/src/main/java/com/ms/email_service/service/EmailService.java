@@ -28,7 +28,7 @@ public class EmailService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailFrom);
-            message.setTo("dto.getEmailTo()");
+            message.setTo(dto.getEmailTo());
             message.setSubject("Notification send by: " + dto.getEmailFrom());
             message.setText(dto.getMessage());
 
